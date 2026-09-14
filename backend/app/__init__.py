@@ -1,1 +1,1 @@
-"""Lasoph backend package."""
+"""Heri Health backend package."""

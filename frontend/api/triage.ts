@@ -70,11 +70,11 @@ export async function triage(payload: TriagePayload): Promise<TriageResponse> {
       body: JSON.stringify(payload),
     });
   } catch {
-    throw new Error("We could not reach Lasoph. Check your connection and try again.");
+    throw new Error("We could not reach Heri Health. Check your connection and try again.");
   }
 
   if (!response.ok) {
-    let detail = "Lasoph could not process this intake.";
+    let detail = "Heri Health could not process this intake.";
     try {
       const body = (await response.json()) as { detail?: string };
       if (body.detail) detail = body.detail;

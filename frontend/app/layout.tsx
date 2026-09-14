@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Lasoph",
-  description: "Calm, structured health intake support",
+  title: "Heri Health | Safety-first health intake",
+  description: "Calm, structured health intake support for patients and clinicians",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -15,7 +15,7 @@ export type MedicalHPI = {
 };
 
 export function briefPayload(brief: MedicalHPI): string {
-  return JSON.stringify({ version: 1, type: "lasoph-clinic-brief", brief });
+  return JSON.stringify({ version: 1, type: "heri-health-clinic-brief", brief });
 }
 
 export async function createBriefQrDataUrl(brief: MedicalHPI): Promise<string> {
@@ -33,7 +33,7 @@ export async function downloadBriefPdf(
   const url = URL.createObjectURL(blob);
   const anchor = window.document.createElement("a");
   anchor.href = url;
-  anchor.download = `lasoph-clinic-brief-${new Date().toISOString().slice(0, 10)}.pdf`;
+  anchor.download = `heri-health-clinician-brief-${new Date().toISOString().slice(0, 10)}.pdf`;
   document.body.appendChild(anchor);
   anchor.click();
   anchor.remove();
@@ -59,9 +59,9 @@ function PdfField({ label, value }: { label: string; value: string }) {
 
 export function BriefPdfDocument({ brief }: { brief: MedicalHPI }): ReactElement {
   return (
-    <Document title="Lasoph clinician brief">
+    <Document title="Heri Health clinician brief">
       <Page size="A4" style={styles.page}>
-        <Text style={styles.title}>Lasoph clinician brief</Text>
+        <Text style={styles.title}>Heri Health clinician brief</Text>
         <PdfField label="Chief complaint" value={brief.chief_complaint} />
         <PdfField label="History of present illness" value={brief.history_of_present_illness} />
         <PdfField label="Associated symptoms" value={brief.associated_symptoms.join(", ") || "Not reported"} />

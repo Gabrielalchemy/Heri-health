@@ -1,8 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertCircle, CheckCircle2, Loader2, Mic, PhoneCall, ShieldAlert, Sparkles, Stethoscope } from "lucide-react";
+import { AlertCircle, CheckCircle2, ClipboardCheck, FileText, HeartPulse, Loader2, Mic, PhoneCall, ShieldAlert, Sparkles, Stethoscope } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 import type { AnswerValue, TriageQuestion, TriageResponse } from "../api/triage";
 import { downloadBriefPdf } from "../lib/exportBrief";
@@ -31,7 +32,6 @@ type Props = {
   onNarrativeChange: (value: string) => void;
   onAnswer: (id: string, value: AnswerValue) => void;
   onSubmit: () => void;
-  onDemoLoad: () => void;
   onReset: () => void;
 };
 
@@ -41,14 +41,15 @@ function statusLabel(status: TriageResponse["red_flag_check"]["status"]) {
 
 export function VoiceIntakeHero({ onStartListening, listening, speechSupported }: { onStartListening: () => void; listening: boolean; speechSupported: boolean }) {
   return (
-    <section className="rounded-3xl bg-gradient-to-br from-sky-50 to-teal-50 p-6 shadow-sm">
-      <p className="mb-2 text-sm font-semibold text-teal-700">Start safely</p>
-      <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Tell Lasoph what is going on.</h1>
-      <p className="mt-2 max-w-md text-slate-600">Share what you are experiencing in your own words. Lasoph helps organize your story without diagnosing you.</p>
+    <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-teal-950 to-teal-800 p-6 text-white shadow-xl shadow-teal-950/15">
+      <div className="flex items-center justify-between gap-4"><div className="flex items-center gap-2 text-sm font-semibold text-teal-200"><HeartPulse className="h-4 w-4" /> SAFETY-FIRST INTAKE</div><Image src="/brand/heri-health-logo.png" alt="Heri Health app logo" width={58} height={39} className="h-10 w-auto rounded-lg object-cover" priority /></div>
+      <Image src="/brand/heri-health-wordmark.jpg" alt="Heri Health" width={230} height={150} className="mt-4 h-24 w-auto rounded-xl object-cover" priority />
+      <h1 className="mt-3 text-3xl font-semibold tracking-tight">From health panic to a clear next step.</h1>
+      <p className="mt-3 max-w-lg text-teal-50/85">Describe what is happening. Heri Health screens for urgent signals, asks only what matters, then creates a shareable clinician brief.</p>
       <button type="button" onClick={onStartListening} disabled={!speechSupported || listening} className="mx-auto mt-8 flex h-20 w-20 items-center justify-center rounded-full bg-teal-600 text-white shadow-lg shadow-teal-200 disabled:cursor-not-allowed disabled:opacity-60" aria-label={listening ? "Listening" : "Start voice input"}>
         <Mic className="h-8 w-8" />
       </button>
-      <p className="mt-4 text-center text-sm text-slate-600">{speechSupported ? (listening ? "Listening… stop in your browser when you are done." : "Tap the microphone to dictate. Your browser may use a speech service to process audio.") : "Voice input is not supported by this browser. You can type below."}</p>
+      <p className="mt-4 text-center text-sm text-teal-100/85">{speechSupported ? (listening ? "Listening… stop in your browser when you are done." : "Tap the microphone to dictate. Your browser may use a speech service to process audio.") : "Voice input is not supported by this browser. You can type below."}</p>
     </section>
   );
 }
@@ -142,7 +143,7 @@ export function DualView({ brief, summary }: { brief: Brief; summary: NonNullabl
             <button type="button" disabled={!consent || exporting} onClick={() => void exportBrief()} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-3 font-semibold text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50">
               {exporting ? "Creating PDF..." : "Download clinician brief"}
             </button>
-            <p className="mt-2 text-xs text-slate-500">Lasoph does not upload the PDF. It is created in your browser.</p>
+            <p className="mt-2 text-xs text-slate-500">Heri Health does not upload the PDF. It is created in your browser.</p>
             {exportError && <p role="alert" className="mt-2 text-sm text-red-700">{exportError}</p>}
           </div>
         </dl>
@@ -188,13 +189,25 @@ export function EmergencyOverlay({ response, onClose }: { response: TriageRespon
   );
 }
 
-export function LasophIntake({ questions, brief, response, narrative, answers, loading, error, onNarrativeChange, onAnswer, onSubmit, onDemoLoad, onReset }: Props) {
+export function HeriHealthIntake({ questions, brief, response, narrative, answers, loading, error, onNarrativeChange, onAnswer, onSubmit, onReset }: Props) {
   const [step, setStep] = useState<"narrative" | "questions" | "summary">("narrative");
   const [showEmergency, setShowEmergency] = useState(true);
   const [listening, setListening] = useState(false);
+  const [speechConstructor, setSpeechConstructor] = useState<SpeechConstructor | undefined>(undefined);
   const isEmergency = response?.red_flag_check.status === "EMERGENCY";
   const canContinue = narrative.trim().length > 0;
-  const speechConstructor = typeof window === "undefined" ? undefined : ((window as Window & { SpeechRecognition?: SpeechConstructor; webkitSpeechRecognition?: SpeechConstructor }).SpeechRecognition || (window as Window & { webkitSpeechRecognition?: SpeechConstructor }).webkitSpeechRecognition);
+  useEffect(() => {
+    if (isEmergency) setShowEmergency(true);
+  }, [isEmergency, response]);
+  useEffect(() => {
+    const browserWindow = window as Window & {
+      SpeechRecognition?: SpeechConstructor;
+      webkitSpeechRecognition?: SpeechConstructor;
+    };
+    setSpeechConstructor(
+      browserWindow.SpeechRecognition || browserWindow.webkitSpeechRecognition,
+    );
+  }, []);
   const startListening = () => {
     if (!speechConstructor) return;
     const recognition = new speechConstructor();
@@ -208,9 +221,9 @@ export function LasophIntake({ questions, brief, response, narrative, answers, l
   };
 
   return (
-    <main className="mx-auto min-h-screen max-w-xl space-y-5 bg-slate-50 p-4 text-slate-900">
+    <main className="mx-auto min-h-screen max-w-2xl space-y-5 bg-slate-50 p-4 pb-10 text-slate-900 sm:p-6">
       <VoiceIntakeHero onStartListening={startListening} listening={listening} speechSupported={Boolean(speechConstructor)} />
-      <p className="rounded-xl border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-600">For your privacy, Lasoph does not save this intake in this browser after you leave this page. Do not use it for emergencies; call your local emergency number instead.</p>
+      <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-5 text-amber-950"><ShieldAlert className="mt-0.5 h-5 w-5 shrink-0" /><p><strong>Important:</strong> Heri Health helps organize symptoms for care. It does not diagnose or replace emergency services. In an emergency, call your local emergency number.</p></div>
       <nav aria-label="Intake progress" className="flex items-center justify-between text-xs font-medium text-slate-500">
         <span className={step === "narrative" ? "text-teal-700" : ""}>1. Describe</span><span className={step === "questions" ? "text-teal-700" : ""}>2. Clarify</span><span className={step === "summary" ? "text-teal-700" : ""}>3. Review</span>
       </nav>
@@ -219,22 +232,21 @@ export function LasophIntake({ questions, brief, response, narrative, answers, l
       <AnimatePresence mode="wait">
         {step === "narrative" && (
           <motion.section key="narrative" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <label htmlFor="narrative" className="font-medium">What is happening?</label>
+            <div className="flex items-center justify-between gap-3"><label htmlFor="narrative" className="font-semibold">What is happening?</label><span className="text-xs text-slate-500">Patient voice, in their own words</span></div>
             <textarea id="narrative" value={narrative} onChange={(event) => onNarrativeChange(event.target.value)} rows={6} maxLength={12000} className="mt-3 w-full rounded-xl border border-slate-300 p-3 leading-6 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-600" placeholder="Describe your symptoms, when they started, and what concerns you most." />
-            <button type="button" disabled={!canContinue || loading} onClick={() => { setStep("questions"); onSubmit(); }} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-3 font-semibold text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50">{loading && <Loader2 className="h-5 w-5 animate-spin" />}Continue safely</button>
+            <button type="button" disabled={!canContinue || loading} onClick={() => { setStep("questions"); onSubmit(); }} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-3 font-semibold text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50">{loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <ClipboardCheck className="h-5 w-5" />}Screen symptoms safely</button>
           </motion.section>
         )}
         {step === "questions" && (
           <motion.section key="questions" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
             {questions.map((question) => <QuestionCard key={question.id} question={question} value={answers[question.id]} onAnswer={(value) => onAnswer(question.id, value)} />)}
             <button type="button" disabled={loading} onClick={onSubmit} className="flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-3 font-semibold text-white hover:bg-teal-800 disabled:opacity-50">{loading && <Loader2 className="h-5 w-5 animate-spin" />}Update triage</button>
-            {response && <button type="button" onClick={() => setStep("summary")} className="w-full rounded-xl border border-slate-300 px-4 py-3 font-medium text-slate-700">Review summary</button>}
+            {response && <button type="button" onClick={() => setStep("summary")} className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 font-medium text-slate-700 hover:bg-slate-50"><FileText className="h-4 w-4" />Review clinician-ready summary</button>}
           </motion.section>
         )}
         {step === "summary" && brief && <motion.div key="summary" initial={{ opacity: 0 }} animate={{ opacity: 1 }}><DualView brief={brief} summary={response?.patient_summary ?? null} /></motion.div>}
       </AnimatePresence>
       <div className="flex items-center justify-center gap-3">
-        <button type="button" onClick={() => { onDemoLoad(); setStep("questions"); }} className="mx-auto block text-xs text-slate-500 underline hover:text-teal-700">Load demo scenario</button>
         <button type="button" onClick={onReset} className="text-xs font-medium text-slate-500 underline hover:text-red-700">Clear session</button>
       </div>
       {isEmergency && showEmergency && response && <EmergencyOverlay response={response} onClose={() => setShowEmergency(false)} />}

@@ -1,6 +1,6 @@
-# Lasoph patient-release gate
+# Heri Health patient-release gate
 
-Lasoph is **not approved for patient deployment** until every item below has
+Heri Health is **not approved for patient deployment** until every item below has
 an accountable owner, evidence, and sign-off. Completing software tasks alone
 does not make a clinical triage product safe or legally deployable.
 
@@ -29,8 +29,8 @@ does not make a clinical triage product safe or legally deployable.
   management, audit logging, backups, and penetration testing are in place.
 - [ ] A threat model covers browser speech services, exports/downloads,
   third-party model providers, abuse, and prompt injection.
-- [ ] Production is served only over HTTPS with `LASOPH_ALLOWED_ORIGINS` and
-  `LASOPH_ALLOWED_HOSTS` restricted to the deployed domains. Replace the
+- [ ] Production is served only over HTTPS with `HERI_HEALTH_ALLOWED_ORIGINS` and
+  `HERI_HEALTH_ALLOWED_HOSTS` restricted to the deployed domains. Replace the
   in-process rate limiter with shared edge or gateway rate limiting.
 
 ## Model operations (only if enabled)

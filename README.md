@@ -1,19 +1,19 @@
-# Lasoph
+# Heri Health
 
-Lasoph is an empathetic, multimodal triage copilot that turns health-related
+Heri Health is an empathetic, multimodal triage copilot that turns health-related
 panic into calm, understandable next steps for patients and a structured intake
 brief for clinicians.
 
 ## Product promise
 
-When someone feels unwell, Lasoph should:
+When someone feels unwell, Heri Health should:
 
 1. Help the person describe what is happening without amplifying fear.
 2. Identify urgency and direct them to an appropriate level of care.
 3. Separate observed symptoms from online diagnoses and assumptions.
 4. Produce a concise, clinically useful summary that a physician can review.
 
-Lasoph is a triage and intake-support tool, not a diagnostic service. It must
+Heri Health is a triage and intake-support tool, not a diagnostic service. It must
 not present a diagnosis as fact, replace emergency services, or delay urgent
 care.
 
@@ -86,10 +86,9 @@ The repository now includes:
 - `backend/app/orchestrator.py`: provider-neutral safety-first workflow with a
   deterministic question fallback.
 - `backend/app/sanitize.py`: patient-output diagnosis-language guardrail.
-- `frontend/components/LasophIntake.tsx`: mobile-first intake, questionnaire,
+- `frontend/components/HeriHealthIntake.tsx`: mobile-first intake, questionnaire,
   dual view, and emergency overlay components.
 - `frontend/lib/exportBrief.tsx`: QR payload and PDF download helpers.
-- `frontend/lib/demoScenario.ts`: appendicitis demo preset.
 
 Run the backend locally:
 
@@ -100,7 +99,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Run the frontend demo locally:
+Run the frontend locally:
 
 ```bash
 cd frontend
@@ -109,9 +108,8 @@ npm run dev
 ```
 
 Then open `http://localhost:3000`. The page includes the calm intake screen,
-question cards, the patient/doctor toggle, and the appendicitis demo scenario.
-The current voice button is a visual interaction demo; browser audio capture
-and transcription still need to be connected to a provider.
+question cards, the patient/doctor toggle, and clinician-brief export. Browser
+voice dictation is opt-in where speech recognition is supported.
 
 This is a safety-oriented engineering foundation, not a clinically validated
 or legally cleared medical device. Before patient deployment, the red-flag
@@ -119,7 +117,7 @@ rules, prompts, escalation copy, privacy controls, identity/access model,
 audit logging, retention, hosting, and clinical outputs require review by
 qualified clinicians, security professionals, and applicable regulators.
 
-This gives Lasoph a testable safety boundary before adding model orchestration,
+This gives Heri Health a testable safety boundary before adding model orchestration,
 multimodal processing, or external clinical integrations.
 
 ## Current privacy and model behavior

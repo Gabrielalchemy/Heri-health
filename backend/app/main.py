@@ -1,4 +1,4 @@
-"""FastAPI entrypoint for the Lasoph text intake vertical slice."""
+"""FastAPI entrypoint for the Heri Health text intake vertical slice."""
 
 import os
 import time
@@ -16,7 +16,7 @@ from .sanitize import sanitize_patient_output
 from .schemas import SymptomInput, TriageResponse
 
 app = FastAPI(
-    title="Lasoph Safety and Intake API",
+    title="Heri Health Safety and Intake API",
     version="0.1.0",
     description="Patient intake support with a deterministic emergency safety gate.",
 )
@@ -25,7 +25,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         origin.strip()
-        for origin in os.getenv("LASOPH_ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+        for origin in os.getenv("HERI_HEALTH_ALLOWED_ORIGINS", "http://localhost:3000").split(",")
         if origin.strip()
     ],
     allow_credentials=False,
@@ -37,13 +37,13 @@ app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=[
         host.strip()
-        for host in os.getenv("LASOPH_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+        for host in os.getenv("HERI_HEALTH_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
         if host.strip()
     ],
 )
 
 _requests: dict[str, deque[float]] = defaultdict(deque)
-_rate_limit = int(os.getenv("LASOPH_RATE_LIMIT_PER_MINUTE", "30"))
+_rate_limit = int(os.getenv("HERI_HEALTH_RATE_LIMIT_PER_MINUTE", "30"))
 
 
 @app.middleware("http")

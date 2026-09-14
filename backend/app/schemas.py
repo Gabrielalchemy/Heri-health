@@ -1,4 +1,4 @@
-"""Validated domain contracts shared by the Lasoph safety and AI layers."""
+"""Validated domain contracts shared by the Heri Health safety and AI layers."""
 
 from enum import Enum
 from typing import Literal
@@ -102,7 +102,7 @@ class PatientSummary(BaseModel):
     when_to_seek_care: list[str] = Field(min_length=1, max_length=12)
     urgency: UrgencyStatus
     disclaimer: str = (
-        "Lasoph provides intake support and general education, not a diagnosis."
+        "Heri Health provides intake support and general education, not a diagnosis."
     )
 
 

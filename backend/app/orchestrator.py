@@ -110,7 +110,7 @@ def build_source_traceable_summary(
     )
     summary = PatientSummary(
         explanation=(
-            "Lasoph organized the information you provided for review. "
+            "Heri Health organized the information you provided for review. "
             "This is not a diagnosis or a substitute for professional care."
         ),
         possible_categories=["Reported symptoms require clinical context"],
@@ -161,22 +161,4 @@ def triage_input(input_data: SymptomInput) -> TriageResponse:
         questions=[] if red_flags.triggered_rules else build_clarifying_questions(input_data),
         patient_summary=summary,
         doctor_hpi=doctor_hpi,
-    )
-
-
-def demo_hpi() -> MedicalHPI:
-    return MedicalHPI(
-        chief_complaint="Right lower quadrant abdominal pain",
-        history_of_present_illness=(
-            "Patient reports acute abdominal pain localized to the right lower "
-            "quadrant, worsening since yesterday, with associated nausea and emesis."
-        ),
-        associated_symptoms=["Nausea", "Vomiting"],
-        pertinent_negatives=[],
-        severity=8,
-        onset="Yesterday",
-        location="Right lower quadrant",
-        patient_concerns=["Patient is concerned this may be appendicitis."],
-        missing_information=["Fever", "Last oral intake", "Pregnancy possibility if applicable"],
-        source_quote="My tummy has been hurting badly on the bottom right since yesterday.",
     )

@@ -3,8 +3,7 @@
 import { useState } from "react";
 
 import { triage, type AnswerValue, type TriageResponse } from "../api/triage";
-import { LasophIntake } from "../components/LasophIntake";
-import { appendicitisDemo } from "../lib/demoScenario";
+import { HeriHealthIntake } from "../components/HeriHealthIntake";
 
 export default function HomePage() {
   const [narrative, setNarrative] = useState("");
@@ -52,37 +51,6 @@ export default function HomePage() {
     }
   };
 
-  const loadDemo = () => {
-    setNarrative(appendicitisDemo.transcript);
-    setAnswers({
-      onset: appendicitisDemo.answers.onset,
-      location: appendicitisDemo.answers.location,
-      severity: appendicitisDemo.answers.severity,
-      associated: appendicitisDemo.answers.associated,
-      progression: appendicitisDemo.answers.progression,
-    });
-    setError(null);
-    void submitDemo();
-  };
-
-  const submitDemo = async () => {
-    setLoading(true);
-    try {
-      const result = await triage(buildPayload(appendicitisDemo.transcript, {
-        onset: appendicitisDemo.answers.onset,
-        location: appendicitisDemo.answers.location,
-        severity: appendicitisDemo.answers.severity,
-        associated: appendicitisDemo.answers.associated,
-        progression: appendicitisDemo.answers.progression,
-      }));
-      setResponse(result);
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "The demo could not be loaded.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const resetState = () => {
     setNarrative("");
     setAnswers({});
@@ -92,7 +60,7 @@ export default function HomePage() {
   };
 
   return (
-    <LasophIntake
+    <HeriHealthIntake
       questions={response?.questions ?? []}
       brief={response?.doctor_hpi}
       response={response}
@@ -103,7 +71,6 @@ export default function HomePage() {
       onNarrativeChange={setNarrative}
       onAnswer={updateAnswer}
       onSubmit={submit}
-      onDemoLoad={loadDemo}
       onReset={resetState}
     />
   );
